@@ -14,13 +14,13 @@ Personal portfolio website showcasing AI/ML engineering projects.
 
 ## Projects Featured
 
-- **EvoPersonasMVP** - Full-stack blockchain dApp on Sui
-- **SuiModelHub** - Decentralized AI model marketplace
-- **Self-Correcting RAG Agent** - RAG with hallucination detection
-- **Deep Research Agent** - Multi-model parallel research
-- **AI Teaching Agent Team** - Multi-agent education system
-- **RegexGPT** - Fine-tuned NL-to-regex model
-- **AdamOS** - Personal AI infrastructure
+- **[Vision RAG Agent](https://github.com/Sim-Security/vision-rag)** - Multimodal RAG with human-in-the-loop
+- **[Benedict](https://github.com/Sim-Security/Benedict-Local-Voice-Dictation)** - 100% local voice dictation
+- **[Self-Correcting RAG Agent](https://github.com/Sim-Security/Self-Rag-Learning)** - RAG with hallucination detection
+- **[Deep Research Agent](https://github.com/Sim-Security/Deep-Research-Agent)** - Multi-model parallel research
+- **[AI Teaching Agent Team](https://github.com/Sim-Security/ai-teaching-agent-team)** - Multi-agent education system
+- **[RegexGPT](https://github.com/Sim-Security/Regex-GPT)** - Fine-tuned NL-to-regex model
+- **[AdamOS](https://github.com/Sim-Security/AdamOS)** - Personal AI infrastructure
 
 ## Local Development
 
