@@ -419,6 +419,13 @@ img {
     line-height: 1.3;
 }
 
+.blog-image {
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border-color);
+}
+
 .blog-excerpt {
     color: var(--text-secondary);
     font-size: 1rem;
