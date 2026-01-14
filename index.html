@@ -16,6 +16,7 @@
             <a href="#" class="nav-logo">AS</a>
             <div class="nav-links">
                 <a href="#projects">Projects</a>
+                <a href="#blog">Blog</a>
                 <a href="#about">About</a>
                 <a href="#contact">Contact</a>
             </div>
@@ -53,6 +54,25 @@
         </div>
 
         <div class="project-grid">
+            <article class="project-card featured">
+                <div class="project-header">
+                    <span class="project-tag">Agentic AI</span>
+                    <span class="project-tag">Live Demo</span>
+                </div>
+                <h3>Codebase Onboarding Agent</h3>
+                <p>AI agent that helps developers understand unfamiliar codebases in minutes. 8 deterministic tools for code exploration, 96.7% accuracy across 10 repos in 5 languages, 0% hallucination rate. Deployed on Hugging Face Spaces.</p>
+                <div class="project-tech">
+                    <span>LangGraph</span>
+                    <span>OpenRouter</span>
+                    <span>Gradio</span>
+                    <span>HuggingFace</span>
+                </div>
+                <div class="project-links">
+                    <a href="https://huggingface.co/spaces/Sim-Security/codebase-onboarding-agent" target="_blank">Live Demo</a>
+                    <a href="https://github.com/Sim-Security/codebase-onboarding-agent" target="_blank">GitHub</a>
+                </div>
+            </article>
+
             <article class="project-card featured">
                 <div class="project-header">
                     <span class="project-tag">Multimodal RAG</span>
@@ -164,23 +184,6 @@
                 </div>
             </article>
 
-            <article class="project-card">
-                <div class="project-header">
-                    <span class="project-tag">AI Infrastructure</span>
-                    <span class="project-tag">Systems Design</span>
-                </div>
-                <h3>AdamOS</h3>
-                <p>Personal AI infrastructure framework. Universal execution engine, multi-agent orchestration, voice integration, memory systems, and extensible skill architecture.</p>
-                <div class="project-tech">
-                    <span>TypeScript</span>
-                    <span>Bun</span>
-                    <span>ElevenLabs</span>
-                    <span>Claude Code</span>
-                </div>
-                <div class="project-links">
-                    <a href="https://github.com/Sim-Security/AdamOS" target="_blank">View on GitHub</a>
-                </div>
-            </article>
         </div>
     </section>
 
@@ -229,6 +232,76 @@
                     <li>Blockchain Security</li>
                 </ul>
             </div>
+        </div>
+    </section>
+
+    <section id="blog" class="blog">
+        <div class="section-header">
+            <h2>Blog</h2>
+            <p>Thoughts on AI engineering, agent architectures, and lessons learned building production systems</p>
+        </div>
+        <div class="blog-grid">
+            <article class="blog-card">
+                <div class="blog-meta">
+                    <span class="blog-date">January 13, 2026</span>
+                    <span class="blog-tag">AI Architecture</span>
+                </div>
+                <h3>Why Agents with Tools Beat RAG for Code Understanding</h3>
+                <p class="blog-excerpt">After building both RAG systems and tool-augmented agents, I've learned that giving an agent exploration tools is far superior to traditional retrieval. Here's why chunking and embedding fundamentally breaks down for codebases - and probably for most complex domains.</p>
+                <div class="blog-content">
+                    <h4>The Problem with RAG for Code</h4>
+                    <p>Traditional RAG works like this: chunk your documents, embed them, store in a vector database, then retrieve "relevant" chunks based on semantic similarity. For simple Q&A over documents, this works reasonably well.</p>
+                    <p>But codebases aren't documents. Code has <strong>structure</strong>. Functions call other functions. Classes inherit from other classes. A variable defined on line 10 might be used on line 500. When you chunk code arbitrarily, you destroy these relationships.</p>
+
+                    <h4>What Actually Happens with Code RAG</h4>
+                    <p>Say you ask: "How does the authentication flow work?" A RAG system might retrieve:</p>
+                    <ul>
+                        <li>A chunk with half of the login function (the other half is in a different chunk)</li>
+                        <li>Some random middleware that mentions "auth" in a comment</li>
+                        <li>A test file that imports the auth module</li>
+                    </ul>
+                    <p>The LLM then has to hallucinate the connections between these fragments. It has no way to trace the actual execution path, see the full function signatures, or understand how components interact.</p>
+
+                    <h4>The Tool-Augmented Approach</h4>
+                    <p>Instead of pre-computing what might be relevant, give the agent tools to explore:</p>
+                    <ul>
+                        <li><code>list_directory_structure</code> - See the project layout</li>
+                        <li><code>read_file</code> - Load complete source files</li>
+                        <li><code>search_code</code> - Grep for patterns across the codebase</li>
+                        <li><code>get_imports</code> - Trace dependency relationships</li>
+                        <li><code>find_entry_points</code> - Locate main functions</li>
+                    </ul>
+                    <p>Now the agent can actually follow the code. It reads the login route, sees it calls <code>authenticate()</code>, searches for that function, reads the auth service, discovers it uses a token validator, and so on. It builds a complete mental model by <strong>exploring</strong>, not by hoping the right chunks appear.</p>
+
+                    <h4>The Context Window Advantage</h4>
+                    <p>Modern LLMs have 200k+ token context windows. That's roughly 500-1000 source files worth of code. You don't need embeddings and retrieval when you can just... read the files.</p>
+                    <p>The "but what about large codebases?" objection misses the point. Even in a million-line codebase, understanding any particular feature rarely requires reading more than 20-30 files. The agent with tools can identify and load exactly those files.</p>
+
+                    <h4>Results from the Codebase Onboarding Agent</h4>
+                    <p>I built a tool-augmented agent to test this thesis. The results:</p>
+                    <ul>
+                        <li><strong>96.7% accuracy</strong> across 10 diverse repositories in 5 languages</li>
+                        <li><strong>0% hallucination rate</strong> - every claim cites specific file:line references</li>
+                        <li><strong>100% tool usage</strong> - the agent explores rather than guesses</li>
+                    </ul>
+                    <p>No embedding infrastructure. No vector database. No chunking strategy debates. Just tools and a capable model.</p>
+
+                    <h4>Beyond Code: A General Principle</h4>
+                    <p>This insight extends beyond codebases. Any domain with <strong>structure</strong> and <strong>relationships</strong> will suffer from RAG's chunking problem:</p>
+                    <ul>
+                        <li>Legal documents that reference other sections</li>
+                        <li>Technical specifications with dependencies</li>
+                        <li>Research papers with citations and methodology chains</li>
+                        <li>Database schemas with foreign key relationships</li>
+                    </ul>
+                    <p>Whenever understanding requires following connections, tools beat retrieval.</p>
+
+                    <h4>The Takeaway</h4>
+                    <p>RAG was a clever solution when context windows were tiny and we needed ways to "cheat" information into the prompt. But we're in a different era now. Large context windows + tool use + capable reasoning = agents that can actually explore and understand, rather than pattern-match against pre-computed embeddings.</p>
+                    <p>Give your agents tools to explore. Let them discover. The results speak for themselves.</p>
+                </div>
+                <a href="#" class="blog-read-more" onclick="toggleBlogPost(event)">Read Full Post</a>
+            </article>
         </div>
     </section>
 
@@ -293,5 +366,26 @@
     <footer class="footer">
         <p>Built with care. Open to opportunities.</p>
     </footer>
+
+    <script>
+        function toggleBlogPost(event) {
+            event.preventDefault();
+            const link = event.target;
+            const card = link.closest('.blog-card');
+            const content = card.querySelector('.blog-content');
+            const excerpt = card.querySelector('.blog-excerpt');
+
+            content.classList.toggle('expanded');
+            link.classList.toggle('expanded');
+
+            if (content.classList.contains('expanded')) {
+                link.textContent = 'Show Less';
+                excerpt.style.display = 'none';
+            } else {
+                link.textContent = 'Read Full Post';
+                excerpt.style.display = 'block';
+            }
+        }
+    </script>
 </body>
 </html>
