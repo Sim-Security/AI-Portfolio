@@ -243,6 +243,78 @@
         <div class="blog-grid">
             <article class="blog-card">
                 <div class="blog-meta">
+                    <span class="blog-date">January 14, 2026</span>
+                    <span class="blog-tag">AI Protocols</span>
+                </div>
+                <h3>MCP vs A2A: The Difference Between Having Tools and Hiring Specialists</h3>
+                <img src="mcp-vs-a2a-infographic.jpg" alt="MCP vs A2A protocol comparison infographic" class="blog-image">
+                <p class="blog-excerpt">Two protocols are shaping how AI agents interact with the world: MCP gives agents tools to do work themselves, while A2A lets agents delegate to other agents entirely. Understanding the difference clicked for me when I thought about it like visiting a hardware store.</p>
+                <div class="blog-content">
+                    <h4>The Hardware Store Analogy</h4>
+                    <p>I've been building with both MCP (Model Context Protocol) and A2A (Agent2Agent Protocol), and for a while I couldn't articulate why they felt so different. Then I thought about hardware stores.</p>
+                    <p><strong>MCP is like walking into Home Depot and finding the nail gun yourself.</strong> You have skills: you can walk, read aisle signs, ask the kiosk, and pay at checkout. These are your "tools." You navigate the store, locate what you need, and handle the transaction. You need to understand the store's layout, and if you want something from Lowe's next, you learn a whole new layout.</p>
+                    <p><strong>A2A is like asking an employee to get you a nail gun.</strong> You describe what you need ("I'm doing framing work, need something reliable"). The employee knows the inventory, the layout, maybe even that one model has recalls. They handle everything internally - you just get the result. And here's the key: you can ask any store's employee the same way. The protocol for "asking a human for help" is universal.</p>
+                    <img src="hardware-store-analogy.jpg" alt="Hardware store analogy for MCP vs A2A" class="blog-image" style="margin: 1.5rem 0;">
+                    <p>This isn't just a cute analogy. It maps directly to how these protocols work.</p>
+
+                    <h4>What MCP Actually Does</h4>
+                    <p>MCP, developed by Anthropic, is a standard for giving AI agents access to tools. Think of tools as functions the agent can call:</p>
+                    <ul>
+                        <li><code>read_file(path)</code> - Load a file's contents</li>
+                        <li><code>query_database(sql)</code> - Run a database query</li>
+                        <li><code>send_email(to, subject, body)</code> - Send an email</li>
+                        <li><code>search_web(query)</code> - Search the internet</li>
+                    </ul>
+                    <p>The agent decides when and how to use these tools. It orchestrates. If you ask "What's in my inbox?", the agent might call <code>get_emails()</code>, then <code>summarize()</code> on each one. The agent is doing the work, using tools as extensions of its capabilities.</p>
+                    <p>MCP standardizes how these tools are discovered and called, so you don't need custom integrations for every service. One protocol, many tools.</p>
+
+                    <h4>What A2A Actually Does</h4>
+                    <p>A2A, introduced by Google and now under the Linux Foundation, is a standard for agents to talk to <em>other agents</em>. Not tools - agents. Entities with their own reasoning, their own tools, their own way of solving problems.</p>
+                    <p>When you call an A2A agent, you describe what you want. You don't tell it how. The weather agent might use an API, scrape a website, or ask another agent. You don't know and you don't care. You get the result.</p>
+
+                    <h4>The Critical Difference</h4>
+                    <p>With <strong>MCP</strong>, you're the orchestrator. You have a toolbox. You decide which tools to use and in what order. Every capability must be explicitly available to you as a tool.</p>
+                    <p>With <strong>A2A</strong>, you're a delegator. You describe the outcome you want to another autonomous entity. That entity figures out how to deliver it - possibly using its own tools, possibly calling other agents, possibly doing something you never anticipated.</p>
+
+                    <h4>Why Both Exist (And Why You Need Both)</h4>
+                    <p>These aren't competitors. They're complementary.</p>
+                    <p><strong>MCP handles vertical integration</strong> - connecting an agent to data sources, APIs, and functions it needs to do its job.</p>
+                    <p><strong>A2A handles horizontal integration</strong> - connecting agents to each other across organizational boundaries.</p>
+                    <p>Real example: I built a research agent that answers questions by searching the web and synthesizing results. Internally, it uses tools (MCP-style) to search DuckDuckGo and call an LLM. Externally, it exposes an A2A endpoint so any other agent can ask it questions without knowing how it works inside.</p>
+                    <p>The agent <em>uses</em> tools. The agent <em>is</em> an A2A endpoint.</p>
+
+                    <h4>The Enterprise Play</h4>
+                    <p>Here's where A2A gets interesting at scale. Imagine:</p>
+                    <ul>
+                        <li>Salesforce exposes a "customer lookup" agent</li>
+                        <li>SAP exposes an "inventory check" agent</li>
+                        <li>Stripe exposes a "payment processing" agent</li>
+                    </ul>
+                    <p>Your internal agent needs to handle a customer order. Instead of integrating with three different APIs (each with their own auth, SDKs, rate limits), it just asks three A2A agents. Same protocol. Same message format. The specialists handle their domains.</p>
+                    <p>This is why Google pushed A2A and the Linux Foundation adopted it. It's not about building better agents - it's about making agents interoperable across the entire ecosystem.</p>
+
+                    <h4>What I Learned Building an A2A Agent</h4>
+                    <p>I built a demo to test this. My AdamOS Research Agent exposes an A2A endpoint, and I had it work alongside public agents from the A2A registry (yes, there's already a registry with 100+ agents).</p>
+                    <p>The aha moment: my agent and a "Hello World" agent on Render.com and a business AI on Lifie.ai all spoke the same protocol. I discovered their capabilities via their Agent Cards, called them with identical message formats, and got responses back. Different platforms, different implementations, same interface.</p>
+                    <p>That's the promise. HTTP standardized how servers talk to each other. A2A standardizes how agents talk to each other.</p>
+
+                    <h4>The Takeaway</h4>
+                    <p>When you're building AI systems, think about:</p>
+                    <p><strong>Use MCP when</strong> you need your agent to do work directly - read files, query databases, call APIs. The agent is the worker, tools are its extensions.</p>
+                    <p><strong>Use A2A when</strong> you want to leverage capabilities you don't control - other organizations' agents, specialized services, domain experts. The agent is a delegator, other agents are specialists.</p>
+                    <p>Or, back to the hardware store:</p>
+                    <ul>
+                        <li>MCP = Learn to navigate the store yourself</li>
+                        <li>A2A = Ask an employee and let them handle it</li>
+                    </ul>
+                    <p>Both have their place. The future probably involves agents that use MCP internally while exposing A2A externally - specialists that can be hired by anyone.</p>
+                    <p>We're still early. But the protocols are here, they're open, and they're already being used. Time to build.</p>
+                </div>
+                <a href="#" class="blog-read-more" onclick="toggleBlogPost(event)">Read Full Post</a>
+            </article>
+
+            <article class="blog-card">
+                <div class="blog-meta">
                     <span class="blog-date">January 13, 2026</span>
                     <span class="blog-tag">AI Architecture</span>
                 </div>
