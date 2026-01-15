@@ -258,23 +258,25 @@
                     <p>This isn't just a cute analogy. It maps directly to how these protocols work.</p>
 
                     <h4>What MCP Actually Does</h4>
-                    <p>MCP, developed by Anthropic, is a standard for giving AI agents access to tools. Think of tools as functions the agent can call:</p>
+                    <p>First, let's be clear: "giving an agent tools" is just basic agentic behavior. Any framework can let an agent call functions. MCP is something more specific.</p>
+                    <p>MCP (Model Context Protocol), developed by Anthropic, is a <strong>standardized protocol</strong> for connecting agents to external services. Think of it like USB for AI - a universal plug that works with any compatible service.</p>
+                    <p>Without MCP, connecting an agent to Postgres requires custom code. Connecting to Slack requires different custom code. Every integration is bespoke. With MCP:</p>
                     <ul>
-                        <li><code>read_file(path)</code> - Load a file's contents</li>
-                        <li><code>query_database(sql)</code> - Run a database query</li>
-                        <li><code>send_email(to, subject, body)</code> - Send an email</li>
-                        <li><code>search_web(query)</code> - Search the internet</li>
+                        <li><strong>Discovery</strong> - Agent asks "what can you do?" and gets a capability list</li>
+                        <li><strong>Schema</strong> - Tools have typed inputs/outputs, automatically understood</li>
+                        <li><strong>Resources</strong> - Access to data, not just functions</li>
+                        <li><strong>Standard transport</strong> - JSON-RPC, works the same everywhere</li>
                     </ul>
-                    <p>The agent decides when and how to use these tools. It orchestrates. If you ask "What's in my inbox?", the agent might call <code>get_emails()</code>, then <code>summarize()</code> on each one. The agent is doing the work, using tools as extensions of its capabilities.</p>
-                    <p>MCP standardizes how these tools are discovered and called, so you don't need custom integrations for every service. One protocol, many tools.</p>
+                    <p>If someone builds an MCP server for GitHub, any MCP-compatible agent can use it. No custom integration. The value isn't "tools" - it's the <em>standardization</em> of how tools get exposed and connected.</p>
 
                     <h4>What A2A Actually Does</h4>
                     <p>A2A, introduced by Google and now under the Linux Foundation, is a standard for agents to talk to <em>other agents</em>. Not tools - agents. Entities with their own reasoning, their own tools, their own way of solving problems.</p>
                     <p>When you call an A2A agent, you describe what you want. You don't tell it how. The weather agent might use an API, scrape a website, or ask another agent. You don't know and you don't care. You get the result.</p>
 
                     <h4>The Critical Difference</h4>
-                    <p>With <strong>MCP</strong>, you're the orchestrator. You have a toolbox. You decide which tools to use and in what order. Every capability must be explicitly available to you as a tool.</p>
-                    <p>With <strong>A2A</strong>, you're a delegator. You describe the outcome you want to another autonomous entity. That entity figures out how to deliver it - possibly using its own tools, possibly calling other agents, possibly doing something you never anticipated.</p>
+                    <p>With <strong>MCP</strong>, you're connecting to services. You get standardized access to tools and data, but you still orchestrate. You decide what to call, when, and how to use the results.</p>
+                    <p>With <strong>A2A</strong>, you're delegating to another agent. You describe the outcome you want to an autonomous entity. That entity figures out how to deliver it - possibly using its own MCP connections, possibly calling other A2A agents, possibly doing something you never anticipated.</p>
+                    <p>MCP standardizes the <em>plug</em>. A2A standardizes the <em>conversation</em>.</p>
 
                     <h4>Why Both Exist (And Why You Need Both)</h4>
                     <p>These aren't competitors. They're complementary.</p>
