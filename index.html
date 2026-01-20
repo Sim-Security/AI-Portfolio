@@ -111,6 +111,26 @@
                 </div>
             </article>
 
+            <article class="project-card featured">
+                <div class="project-header">
+                    <span class="project-tag">Voice AI</span>
+                    <span class="project-tag">Lead Gen</span>
+                </div>
+                <h3>AI Lead Qualifier</h3>
+                <p>AI voice agent that calls leads within seconds of form submission. Conducts BANT qualification interviews, analyzes transcripts with Claude, and scores leads as hot/warm/cold automatically. ~$0.35 per call.</p>
+                <div class="project-tech">
+                    <span>Vapi.ai</span>
+                    <span>Claude</span>
+                    <span>Hono</span>
+                    <span>Bun</span>
+                    <span>React</span>
+                    <span>PostgreSQL</span>
+                </div>
+                <div class="project-links">
+                    <a href="https://github.com/Sim-Security/AI-Lead-Qualifier" target="_blank">View on GitHub</a>
+                </div>
+            </article>
+
             <article class="project-card">
                 <div class="project-header">
                     <span class="project-tag">RAG</span>
@@ -241,6 +261,97 @@
             <p>Thoughts on AI engineering, agent architectures, and lessons learned building production systems</p>
         </div>
         <div class="blog-grid">
+            <article class="blog-card">
+                <div class="blog-meta">
+                    <span class="blog-date">January 20, 2026</span>
+                    <span class="blog-tag">Voice AI</span>
+                </div>
+                <h3>Building an AI Voice Agent That Calls Leads in 20 Seconds</h3>
+                <img src="lead-response-time-infographic.jpg" alt="Lead response time impact on conversion rates" class="blog-image">
+                <p class="blog-excerpt">There's a brutal reality in sales: wait 5 minutes to call a lead and your odds of qualifying them drop by 80%. I built an AI voice agent that makes the first call within seconds of form submission, conducts a full qualification interview, and scores the lead automatically.</p>
+                <div class="blog-content">
+                    <h4>The Speed-to-Lead Problem</h4>
+                    <p>I've watched this happen too many times. Someone fills out a contact form, genuinely interested. An hour later, they've moved on. A day later, they can't remember why they reached out. The data backs this up:</p>
+                    <ul>
+                        <li><strong>Within 5 minutes:</strong> 100x more likely to qualify the lead</li>
+                        <li><strong>After 5 minutes:</strong> 80% drop in qualification odds</li>
+                        <li><strong>Within 20 seconds:</strong> 220% increase in conversions</li>
+                    </ul>
+                    <p>Humans can't respond in 20 seconds. Not consistently. Not at scale. So I built something that can.</p>
+
+                    <h4>What AI Lead Qualifier Does</h4>
+                    <p>The system is straightforward: when someone submits a lead form, an AI voice agent calls them immediately. Not a robocall script—an actual conversational AI that conducts a BANT qualification interview.</p>
+                    <p>BANT stands for Budget, Authority, Need, and Timeline. It's the standard framework for determining if a lead is worth pursuing:</p>
+                    <ul>
+                        <li><strong>Budget:</strong> "What budget range have you allocated for this?"</li>
+                        <li><strong>Authority:</strong> "Who else would be involved in evaluating solutions?"</li>
+                        <li><strong>Need:</strong> "What's driving your interest right now?"</li>
+                        <li><strong>Timeline:</strong> "When are you looking to have something in place?"</li>
+                    </ul>
+                    <p>The AI asks these questions naturally, responds to the lead's answers, and extracts the qualification signals. After the call ends, it analyzes the transcript and scores the lead as hot, warm, or cold.</p>
+                    <img src="ai-lead-qualifier-architecture.jpg" alt="AI Lead Qualifier system architecture" class="blog-image" style="margin: 1.5rem 0;">
+
+                    <h4>The Architecture</h4>
+                    <p>I built this as a TypeScript monorepo with three main components:</p>
+                    <ul>
+                        <li><strong>Backend (Hono):</strong> Handles form submissions, Vapi webhooks, and transcript analysis. Runs on Bun for speed.</li>
+                        <li><strong>Frontend (React + Vite):</strong> Lead form with country code selector, real-time dashboard showing hot/warm/cold distribution, detailed lead view with full transcripts.</li>
+                        <li><strong>Database (PostgreSQL + Drizzle):</strong> Stores leads, call metadata, transcripts, and qualification scores with proper indexing.</li>
+                    </ul>
+                    <p>The voice AI runs on Vapi.ai—they handle the telephony, speech-to-text, and text-to-speech. I send them a transient assistant configuration with the BANT system prompt, and they handle the call. When it ends, they hit my webhook with the full transcript.</p>
+
+                    <h4>The Intelligence Layer</h4>
+                    <p>Here's where it gets interesting. A transcript is just text. The intelligence comes from Claude (Anthropic's API) analyzing that transcript to extract structured qualification data.</p>
+                    <p>The AI doesn't just look for keywords. It understands context:</p>
+                    <ul>
+                        <li>A call that ends in 30 seconds? Probably a hangup. Score: cold.</li>
+                        <li>Silence timeout? They stopped engaging. Score: cold.</li>
+                        <li>Voicemail detected? No conversation happened. Score: cold.</li>
+                        <li>Full conversation with timeline urgency? Score: hot.</li>
+                    </ul>
+                    <p>This call-context awareness was critical. Without it, a polite voicemail greeting would score the same as a genuine interest conversation.</p>
+
+                    <h4>Key Technical Decisions</h4>
+                    <p><strong>Transient Assistants:</strong> Instead of pre-creating Vapi assistants, I send the full configuration (system prompt, voice settings, model) with each call. This means the prompt can be customized per-lead or per-campaign without managing assistant state.</p>
+                    <p><strong>BYOK Architecture:</strong> The system supports Bring Your Own Keys. API keys can come from environment variables (production) or a Settings UI (development). No secrets in code, no vendor lock-in.</p>
+                    <p><strong>Auto-Migration:</strong> Database migrations run automatically on backend startup. No manual setup steps, no "forgot to run migrations" bugs.</p>
+                    <p><strong>E.164 Phone Format:</strong> International phone numbers need proper formatting. The frontend includes a country code selector that ensures numbers are always in E.164 format (+1XXXXXXXXXX) before hitting the API.</p>
+
+                    <h4>Cost Per Call</h4>
+                    <p>The economics work out to roughly <strong>$0.35 per call</strong>:</p>
+                    <ul>
+                        <li>Vapi platform: ~$0.05</li>
+                        <li>Deepgram (speech-to-text): ~$0.01</li>
+                        <li>GPT-4 (conversation): ~$0.02-0.20 depending on length</li>
+                        <li>ElevenLabs (voice): ~$0.036</li>
+                    </ul>
+                    <p>Compare that to a human SDR's time. Even at minimum wage, a 5-minute call costs more—and you can't make 100 of them simultaneously.</p>
+
+                    <h4>What I'd Do Differently</h4>
+                    <p>A few things I'd reconsider in v2:</p>
+                    <ul>
+                        <li><strong>Claude for the voice agent itself:</strong> Currently using GPT-4 via Vapi for the actual conversation, Claude for transcript analysis. Vapi now supports Claude—worth testing for consistency.</li>
+                        <li><strong>Voicemail detection + callback scheduling:</strong> Right now voicemails just score as cold. A smarter system would detect voicemail, schedule a retry, and track attempts.</li>
+                        <li><strong>CRM integration:</strong> Leads live in PostgreSQL. In production, you'd want these flowing into Salesforce, HubSpot, or Pipedrive with automatic field mapping.</li>
+                    </ul>
+
+                    <h4>Try It Yourself</h4>
+                    <p>The project is open source. You'll need accounts with Vapi.ai and Anthropic, but beyond that it's plug and play:</p>
+                    <pre><code>git clone https://github.com/Sim-Security/AI-Lead-Qualifier
+cd ai-lead-qualifier
+cp .env.example .env
+# Add your API keys
+docker compose up -d</code></pre>
+                    <p>Dashboard runs on localhost. Submit a lead with your phone number, and you'll get a call within seconds.</p>
+                    <p><a href="https://github.com/Sim-Security/AI-Lead-Qualifier" target="_blank">View on GitHub →</a></p>
+
+                    <h4>The Takeaway</h4>
+                    <p>Speed matters in sales. The data is clear: respond in seconds, not minutes. AI voice agents make that possible at scale, with consistent qualification frameworks and automatic scoring.</p>
+                    <p>This isn't about replacing salespeople. It's about making sure qualified leads actually reach them—warm, scored, and ready to close.</p>
+                </div>
+                <a href="#" class="blog-read-more" onclick="toggleBlogPost(event)">Read Full Post</a>
+            </article>
+
             <article class="blog-card">
                 <div class="blog-meta">
                     <span class="blog-date">January 14, 2026</span>
